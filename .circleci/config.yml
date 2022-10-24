@@ -50,9 +50,7 @@ jobs:
           module-list-file: << parameters.module-list-file >>
           output: << parameters.config-list-file >>
       - run:
-          command: cat << parameters.config-list-file >>
-          # environment:
-          #   CONFIG_LIST_ORIGINAL: << parameters.config-list-file >>
+          command: LC_ALL=C sort -u -o << parameters.config-list-file >> << parameters.config-list-file >>
       - config-splitting/combine-configs:
           config-list-file: << parameters.config-list-file >>
           output: << parameters.continuation-config >>
