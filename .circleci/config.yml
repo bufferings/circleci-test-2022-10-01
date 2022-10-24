@@ -4,6 +4,7 @@ setup: true
 
 orbs:
   config-splitting: circle-makotom-orbs/config-splitting@0.0.6
+  continuation: circleci/continuation@0.3.1
 
 jobs:
   run-modular-configs-selectively:
