@@ -2,6 +2,12 @@ version: 2.1
 
 setup: true
 
+executors:
+  default:
+    description: The executor used by this orb by default
+    docker:
+      - image: cimg/python:3.9
+
 orbs:
   config-splitting: circle-makotom-orbs/config-splitting@0.0.6
   continuation: circleci/continuation@0.3.1
