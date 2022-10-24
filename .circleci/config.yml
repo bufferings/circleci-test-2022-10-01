@@ -8,7 +8,7 @@ orbs:
 workflows:
   setup:
     jobs:
-      - config-splitting/run-all-modular-configs:
+      - config-splitting/run-modular-configs-selectively:
           base-revision: main
           config-list-file: .circleci/configs.txt
           module-list-file: .circleci/modules.txt
