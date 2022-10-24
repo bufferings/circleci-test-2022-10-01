@@ -43,14 +43,14 @@ jobs:
           module-list-file: << parameters.module-list-file >>
           output: << parameters.config-list-file >>
       - run:
-          command: cat $CONFIG_LIST_ORIGINAL
-          environment:
-            CONFIG_LIST_ORIGINAL: << parameters.config-list-file >>
+          command: cat << parameters.config-list-file >>
+          # environment:
+          #   CONFIG_LIST_ORIGINAL: << parameters.config-list-file >>
       - config-splitting/combine-configs:
           config-list-file: << parameters.config-list-file >>
           output: << parameters.continuation-config >>
           shared-config-file: << parameters.shared-config-file >>
-      - config-splitting/continuation/continue:
+      - continuation/continue:
           configuration_path: << parameters.continuation-config >>
 
 workflows:
