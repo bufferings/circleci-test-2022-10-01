@@ -1,0 +1,11 @@
+jobs:
+  ios-test-job:
+    executor: cimg-base
+    steps:
+      - checkout
+      - run: sleep 60
+      - run: echo "iOS"
+workflows:
+  ios-workflow:
+    jobs:
+      - ios-test-job
