@@ -1,0 +1,10 @@
+jobs:
+  android-test-job:
+    executor: cimg-base
+    steps:
+      - checkout
+      - run: echo "Android"
+workflows:
+  android-workflow:
+    jobs:
+      - android-test-job

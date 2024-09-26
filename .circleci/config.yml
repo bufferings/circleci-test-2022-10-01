@@ -1,16 +1,67 @@
-version: '2.1'
+version: 2.1
 
 setup: true
 
+executors:
+  default:
+    description: The executor used by this orb by default
+    docker:
+      - image: cimg/python:3.9
+
 orbs:
-  path-filtering: circleci/path-filtering@0.1.3
+  config-splitting: circle-makotom-orbs/config-splitting@0.0.6
+  continuation: circleci/continuation@0.3.1
+
+jobs:
+  run-modular-configs-selectively:
+    description: Select "modular" configs to include based on file changes and run
+      the selected configs by combining them
+    executor: default
+    parameters:
+      base-revision:
+        default: main
+        description: Revision to compare with the current HEAD
+        type: string
+      config-list-file:
+        default: /tmp/selected-configs.txt
+        description: Path to the file where the list of configs to be combined generated
+        type: string
+      continuation-config:
+        default: /tmp/continuation-config.yml
+        description: Path to the file the combined config will be saved
+        type: string
+      force-all:
+        default: false
+        description: Emergency valve - forcibly build all the modules
+        type: boolean
+      module-list-file:
+        description: Path to the file which lists directories to be examined for changes
+        type: string
+      shared-config-file:
+        default: .circleci/continue-shared.yml
+        description: Path to the config providing shared resources (such as prerequisite
+          jobs and common commands)
+        type: string
+    steps:
+      - config-splitting/prepare
+      - config-splitting/select-configs:
+          base-revision: << parameters.base-revision >>
+          force-all: << parameters.force-all >>
+          module-list-file: << parameters.module-list-file >>
+          output: << parameters.config-list-file >>
+      - run:
+          command: LC_ALL=C sort -u -o << parameters.config-list-file >> << parameters.config-list-file >>
+      - config-splitting/combine-configs:
+          config-list-file: << parameters.config-list-file >>
+          output: << parameters.continuation-config >>
+          shared-config-file: << parameters.shared-config-file >>
+      - continuation/continue:
+          configuration_path: << parameters.continuation-config >>
 
 workflows:
-  generate-config:
+  setup:
     jobs:
-      - path-filtering/filter:
+      - run-modular-configs-selectively:
           base-revision: main
-          config-path: .circleci/continue-config.yml
-          mapping: |
-            ios/.* build-ios true
-            android/.* build-android true
+          config-list-file: .circleci/configs.txt
+          module-list-file: .circleci/modules.txt

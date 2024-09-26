@@ -1,0 +1,24 @@
+version: 2.1
+
+executors:
+  cimg-base:
+    docker:
+      - image: cimg/base:stable
+
+# These jobs and workflows will be overridden if there's any updates
+jobs:
+  ios-test-job:
+    executor: cimg-base
+    steps:
+      - run: echo "No target files updated"
+  android-test-job:
+    executor: cimg-base
+    steps:
+      - run: echo "No target files updated"
+workflows:
+  ios-workflow:
+    jobs:
+      - ios-test-job
+  android-workflow:
+    jobs:
+      - android-test-job
